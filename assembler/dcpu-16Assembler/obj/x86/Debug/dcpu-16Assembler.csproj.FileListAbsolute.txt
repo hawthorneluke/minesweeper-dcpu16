@@ -1,0 +1,34 @@
+C:\Users\琉玖\AppData\Local\Temporary Projects\dcpu-16Assembler\bin\Debug\dcpu-16Assembler.exe
+C:\Users\琉玖\AppData\Local\Temporary Projects\dcpu-16Assembler\bin\Debug\dcpu-16Assembler.pdb
+C:\Users\琉玖\AppData\Local\Temporary Projects\dcpu-16Assembler\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\琉玖\AppData\Local\Temporary Projects\dcpu-16Assembler\obj\x86\Debug\dcpu_16Assembler.Properties.Resources.resources
+C:\Users\琉玖\AppData\Local\Temporary Projects\dcpu-16Assembler\obj\x86\Debug\GenerateResource.read.1.tlog
+C:\Users\琉玖\AppData\Local\Temporary Projects\dcpu-16Assembler\obj\x86\Debug\GenerateResource.write.1.tlog
+C:\Users\琉玖\AppData\Local\Temporary Projects\dcpu-16Assembler\obj\x86\Debug\dcpu-16Assembler.exe
+C:\Users\琉玖\AppData\Local\Temporary Projects\dcpu-16Assembler\obj\x86\Debug\dcpu-16Assembler.pdb
+C:\Users\琉玖\AppData\Local\Temporary Projects\dcpu-16Assembler\obj\x86\Debug\dcpu_16Assembler.Form1.resources
+C:\Users\琉玖\documents\visual studio 2010\Projects\dcpu-16Assembler\dcpu-16Assembler\obj\x86\Debug\dcpu-16Assembler.exe
+C:\Users\琉玖\documents\visual studio 2010\Projects\dcpu-16Assembler\dcpu-16Assembler\obj\x86\Debug\dcpu-16Assembler.pdb
+C:\Users\琉玖\documents\visual studio 2010\Projects\dcpu-16Assembler\dcpu-16Assembler\bin\Debug\dcpu-16Assembler.exe
+C:\Users\琉玖\documents\visual studio 2010\Projects\dcpu-16Assembler\dcpu-16Assembler\bin\Debug\dcpu-16Assembler.pdb
+C:\Users\琉玖\documents\visual studio 2010\Projects\dcpu-16Assembler\dcpu-16Assembler\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\琉玖\documents\visual studio 2010\Projects\dcpu-16Assembler\dcpu-16Assembler\obj\x86\Debug\dcpu_16Assembler.Form1.resources
+C:\Users\琉玖\documents\visual studio 2010\Projects\dcpu-16Assembler\dcpu-16Assembler\obj\x86\Debug\dcpu_16Assembler.Properties.Resources.resources
+C:\Users\琉玖\documents\visual studio 2010\Projects\dcpu-16Assembler\dcpu-16Assembler\obj\x86\Debug\GenerateResource.read.1.tlog
+C:\Users\琉玖\documents\visual studio 2010\Projects\dcpu-16Assembler\dcpu-16Assembler\obj\x86\Debug\GenerateResource.write.1.tlog
+C:\Users\琉玖\documents\visual studio 2010\Projects\dcpu-16Assembler\dcpu-16Assembler\bin\Debug\dcpu-16Assembler.exe.config
+C:\Users\琉玖\documents\visual studio 2010\Projects\dcpu-16Assembler\dcpu-16Assembler\bin\Debug\ScintillaNET.dll
+C:\Users\琉玖\documents\visual studio 2010\Projects\dcpu-16Assembler\dcpu-16Assembler\bin\Debug\NCalc.dll
+C:\Users\luke\Desktop\MineSweeper\assembler\dcpu-16Assembler\bin\Debug\dcpu-16Assembler.exe.config
+C:\Users\luke\Desktop\MineSweeper\assembler\dcpu-16Assembler\bin\Debug\dcpu-16Assembler.exe
+C:\Users\luke\Desktop\MineSweeper\assembler\dcpu-16Assembler\bin\Debug\dcpu-16Assembler.pdb
+C:\Users\luke\Desktop\MineSweeper\assembler\dcpu-16Assembler\bin\Debug\NCalc.dll
+C:\Users\luke\Desktop\MineSweeper\assembler\dcpu-16Assembler\obj\x86\Debug\dcpu_16Assembler.Form1.resources
+C:\Users\luke\Desktop\MineSweeper\assembler\dcpu-16Assembler\obj\x86\Debug\dcpu_16Assembler.Properties.Resources.resources
+C:\Users\luke\Desktop\MineSweeper\assembler\dcpu-16Assembler\obj\x86\Debug\dcpu-16Assembler.csproj.GenerateResource.Cache
+C:\Users\luke\Desktop\MineSweeper\assembler\dcpu-16Assembler\obj\x86\Debug\dcpu-16Assembler.exe
+C:\Users\luke\Desktop\MineSweeper\assembler\dcpu-16Assembler\obj\x86\Debug\dcpu-16Assembler.pdb
+C:\Users\luke\Desktop\MineSweeper\assembler\dcpu-16Assembler\bin\Debug\SciLexer.dll
+C:\Users\luke\Desktop\MineSweeper\assembler\dcpu-16Assembler\bin\Debug\SciLexer64.dll
+C:\Users\luke\Desktop\MineSweeper\assembler\dcpu-16Assembler\bin\Debug\ScintillaNET.dll
+C:\Users\luke\Desktop\MineSweeper\assembler\dcpu-16Assembler\obj\x86\Debug\dcpu-16Assembler.csprojResolveAssemblyReference.cache

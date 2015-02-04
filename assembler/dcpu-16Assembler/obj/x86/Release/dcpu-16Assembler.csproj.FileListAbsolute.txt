@@ -1,0 +1,13 @@
+C:\Users\luke\Desktop\MineSweeper\assembler\dcpu-16Assembler\bin\Release\dcpu-16Assembler.exe.config
+C:\Users\luke\Desktop\MineSweeper\assembler\dcpu-16Assembler\bin\Release\NCalc.dll
+C:\Users\luke\Desktop\MineSweeper\assembler\dcpu-16Assembler\bin\Release\SciLexer.dll
+C:\Users\luke\Desktop\MineSweeper\assembler\dcpu-16Assembler\bin\Release\SciLexer64.dll
+C:\Users\luke\Desktop\MineSweeper\assembler\dcpu-16Assembler\bin\Release\ScintillaNET.dll
+C:\Users\luke\Desktop\MineSweeper\assembler\dcpu-16Assembler\bin\Release\dcpu-16Assembler.exe
+C:\Users\luke\Desktop\MineSweeper\assembler\dcpu-16Assembler\bin\Release\dcpu-16Assembler.pdb
+C:\Users\luke\Desktop\MineSweeper\assembler\dcpu-16Assembler\obj\x86\Release\dcpu-16Assembler.csprojResolveAssemblyReference.cache
+C:\Users\luke\Desktop\MineSweeper\assembler\dcpu-16Assembler\obj\x86\Release\dcpu_16Assembler.Form1.resources
+C:\Users\luke\Desktop\MineSweeper\assembler\dcpu-16Assembler\obj\x86\Release\dcpu_16Assembler.Properties.Resources.resources
+C:\Users\luke\Desktop\MineSweeper\assembler\dcpu-16Assembler\obj\x86\Release\dcpu-16Assembler.csproj.GenerateResource.Cache
+C:\Users\luke\Desktop\MineSweeper\assembler\dcpu-16Assembler\obj\x86\Release\dcpu-16Assembler.exe
+C:\Users\luke\Desktop\MineSweeper\assembler\dcpu-16Assembler\obj\x86\Release\dcpu-16Assembler.pdb
