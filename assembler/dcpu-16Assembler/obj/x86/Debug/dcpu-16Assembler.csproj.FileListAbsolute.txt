@@ -31,4 +31,3 @@ C:\Users\luke\Desktop\MineSweeper\assembler\dcpu-16Assembler\obj\x86\Debug\dcpu-
 C:\Users\luke\Desktop\MineSweeper\assembler\dcpu-16Assembler\bin\Debug\SciLexer.dll
 C:\Users\luke\Desktop\MineSweeper\assembler\dcpu-16Assembler\bin\Debug\SciLexer64.dll
 C:\Users\luke\Desktop\MineSweeper\assembler\dcpu-16Assembler\bin\Debug\ScintillaNET.dll
-C:\Users\luke\Desktop\MineSweeper\assembler\dcpu-16Assembler\obj\x86\Debug\dcpu-16Assembler.csprojResolveAssemblyReference.cache

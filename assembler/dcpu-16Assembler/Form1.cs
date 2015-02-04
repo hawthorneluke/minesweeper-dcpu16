@@ -1633,7 +1633,7 @@ namespace dcpu_16Assembler
 
         void writeMemory()
         {
-            FileStream fs = File.Create("out");
+            FileStream fs = File.Create("out.dcpu");
             BinaryWriter bw = new BinaryWriter(fs);
 
             for (int i = 0; i < location; i++)
