@@ -115,11 +115,82 @@ set [a], 0x15 ;5
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 jsr get_input_start
+
 jsr display_field
+
+jsr game_clear_check
 
 set pc, game_loop
 
 dat 0
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+:game_clear_check ;ゲームをクリアしたかをチェック
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+set push, i
+set push, j
+set push, a
+set push, b
+set push, c
+
+set c, 0 ;地雷でない開いてないマズのカウント
+
+set j, 0
+
+:game_clear_check_j
+
+set i, 0
+
+:game_clear_check_i
+
+set a, j
+mul a, [field_w]
+add a, i
+add a, [field_mem]
+
+set b, [a]
+shr b, 4
+ife b, 1 ;開いてるマスなら数えない
+set pc, game_clear_check_i_end
+
+;マスが開いてないなら
+set b, [a]
+and b, 0xf
+ife b, 0xf ;開いてないマスが地雷なら数えない
+set pc, game_clear_check_i_end
+
+;開いてない、地雷でないマスなら数える
+add c, 1
+
+:game_clear_check_i_end
+add i, 1
+ifn i, [field_w]
+set pc, game_clear_check_i
+
+add j, 1
+ifn j, [field_h]
+set pc, game_clear_check_j
+
+ife c, 0
+jsr game_won
+
+:game_clear_check_return
+set c, pop
+set b, pop
+set a, pop
+set j, pop
+set i, pop
+set pc, pop
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+:game_won ;地雷でない開いてないマスがもう残ってなくて、ゲームをクリアした
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;勝利
+dat 0x3e0 ;break
+set pc, pop
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -302,7 +373,6 @@ set i, x
 sub i, 1
 
 :open_empty_i
-dat 0x3e0 ;break
 
 ifl i, 0
 set pc, open_empty_i_end
