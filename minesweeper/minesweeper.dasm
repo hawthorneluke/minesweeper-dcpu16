@@ -2,9 +2,24 @@ set pc, get_hardware
 
 
 ;グローバル変数
+:field_w dat 5 ;フィールドの幅
+:field_h dat 5 ;フィールドの高さ
+:mine_count dat 5 ;地雷の数
+:player_x dat 0 ;プレイヤーのx
+:player_y dat 0 ;プレイヤーのy
+
+:field_mem dat 0x9000 ;フィールドデータが始まる番地(0x9000+field_w*field_hまで)
+;0xab : a = 0: 開いてないマス、f: 開いてるマス。
+;b = 0~8: 周りの地雷の数（開いてないマスなら0）、;f: 地雷、e: 地雷付き旗、d: 地雷なし旗
+
 :monitor dat 0 ;モニタのハードID
 :keyboard dat 0 ;キーボードのハードID
 :clock dat 0 ;クロックのハードID
+:monitor_mem dat 0x8000 ;モニタのメモリが始まる番地(0x8180まで)
+
+:screen_w dat 32 ;モニタのマスの横の数
+:screen_h dat 12 ;モニタのマスの縦の数
+
 
 
 :get_hardware
@@ -49,6 +64,56 @@ set pc, hardware_check_loop
 
 
 :game_setup
-set a, [monitor]
-set b, [keyboard]
-set c, [clock]
+
+;モニタが使うメモリ番地を指定
+set a, 0
+set b, [monitor_mem]
+hwi [monitor]
+
+;モニタが使うフォントのメモリ番地を指定
+set a, 1
+set b, 0 ;デフォルトを使う
+hwi [monitor]
+
+;モニタが使うパレットのメモリ番地を指定
+set a, 2
+set b, 0 ;デフォルトを使う
+hwi [monitor]
+
+;モニタの枠の色を指定
+set a, 3
+set b, 0xd ;ピンク
+hwi [monitor]
+
+set a, [monitor_mem]
+set b, 0xf0 ;文字が白、背景が黒
+shl b, 8
+bor b, "A"
+set [a], b
+
+
+
+
+
+:display_field
+set i, 1
+set j, 1
+set a, "B"
+jsr draw_to_screen
+
+dat 0
+
+
+:draw_to_screen ;モニタに文字を[i,j]に出力
+set b, 0xf0 ;文字が白、背景が黒
+shl b, 8
+bor b, a ;字を追加
+
+set z, j
+mul z, [screen_w]
+add z, i
+
+set c, [monitor_mem]
+add c, z
+set [c], b ;メモリに書く
+set pop, pop
