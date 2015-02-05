@@ -11,10 +11,6 @@ Computer::Computer() {
 }
  
 int Computer::OnExecute(char args[]) {
-
-    if(OnInit(args) == false) {
-        return -1;
-    }
  
     SDL_Event Event;
 
@@ -223,7 +219,7 @@ int main(int argc, char* argv[])
 		printf("-memdumpstart [メモリ番地]\t一時停止状態でステップした時、どこからのメモリのデータを出力するか（[メモリ番地]は16進数で）\n\n");
 		printf("-memdumpsize [メモリ個数]\t一時停止状態でステップした時、出力するメモリのデータの個数（[メモリ個数]は10進数で）\n");
 
-		return 0;
+		return -1;
 	}
 
     Computer computer;
@@ -241,7 +237,7 @@ int main(int argc, char* argv[])
 			else if (strcmp(argv[i], "-memdumpstart") == 0) {
 				if (i == argc - 1) {
 					printf("メモリ番地の値を指定してください\n");
-					return 0;
+					return -1;
 				}
 				memoryDumpStartArea = strtoul(argv[++i], NULL, 16);
 				if (memoryDumpStartArea == 0L) {
@@ -251,12 +247,12 @@ int main(int argc, char* argv[])
 			else if (strcmp(argv[i], "-memdumpsize") == 0) {
 				if (i == argc - 1) {
 					printf("メモリ個数の値を指定してください\n");
-					return 0;
+					return -1;
 				}
 				memoryDumpAreaSize = strtoul(argv[++i], NULL, 10);
 				if (memoryDumpStartArea == 0L) {
 					printf("10進数の値 %s がわかりません\n", argv[i]);
-					return 0;
+					return -1;
 				}
 			}
 			else {
@@ -271,15 +267,24 @@ int main(int argc, char* argv[])
 	if (strcmp(fname, "") == 0) {
 		printf("ロードするプログラムのパスを指定してください\n");
 
-		return 0;
+		return -1;
 	}
 
-	computer.step = startStepping;
-	if (computer.step == true) {
-		printf("一時停止。F1でステップして次のCPUサイクルを実行。F2で再生。\n");
-	}
 	computer.memoryDumpAreaStart = memoryDumpStartArea;
 	computer.memoryDumpAreaSize = memoryDumpAreaSize;
+
+	computer.step = startStepping;
+
+	if (computer.OnInit(argv[1]) == false) {
+		return -1;
+	}
+
+	if (computer.step == true) {
+		printf("一時停止。F1でステップして次のCPUサイクルを実行。F2で再生。\n");
+		computer.cpu->registerDump();
+		computer.cpu->memoryDump(computer.memoryDumpAreaStart, computer.memoryDumpAreaSize);
+	}
+	
  
     return computer.OnExecute(argv[1]);	
 }

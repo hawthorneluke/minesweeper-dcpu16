@@ -84,7 +84,7 @@ private:
 
 	unsigned long long cycle;
 
-	static const int memorySize = 0x10000;
+	static const int memorySize = 0xffff;
 	unsigned short memory[memorySize];
 
 	unsigned short reg[regCount];

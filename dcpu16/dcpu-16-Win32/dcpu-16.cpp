@@ -547,13 +547,21 @@ unsigned short *CPU::computeValue(unsigned short value, bool skip, bool inA)
 				{
 					if (inA)
 					{
-						if (!skip) return &memory[reg[regSP]++];
-						else return &memory[reg[regSP]+1];
+						if (!skip) {
+							return &memory[reg[regSP]++];
+						}
+						else {
+							return &memory[reg[regSP] + 1];
+						}
 					}
 					else
 					{
-						if (!skip) return &memory[--reg[regSP]];
-						else return &memory[reg[regSP]-1];
+						if (!skip) {
+							return &memory[--reg[regSP]];
+						}
+						else {
+							return &memory[reg[regSP] - 1];
+						}
 					}
 				break;
 				}
@@ -604,6 +612,10 @@ unsigned short *CPU::computeValue(unsigned short value, bool skip, bool inA)
 //output memory (from start with length)
 void CPU::memoryDump(int start, int length)
 {
+	if (start + length > memorySize) {
+		length = memorySize - start + 1;
+	}
+
 	printf("\nMemory Dump (%04x to %04x):\n", start, (length + start));
 	for (int i = start; i < start + length; i++)
 	{
