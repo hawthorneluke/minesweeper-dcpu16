@@ -212,6 +212,10 @@ set pc, pop
 
 
 :display_field
+set push, i
+set push, j
+set push, a
+
 set j, 0
 
 :display_field_j
@@ -247,7 +251,10 @@ set pc, display_field_j
 
 ;jが一番下についた
 
-
+set a, pop
+set j, pop
+set i, pop
+set pc, pop
 
 
 
