@@ -126,7 +126,7 @@ The value (a) is in the same six bit format as defined earlier.
 --- Special opcodes: (5 bits) --------------------------------------------------
  C | VAL  | NAME  | DESCRIPTION
 ---+------+-------+-------------------------------------------------------------
- - | 0x00 | n/a   | reserved for future expansion
+ - | 0x00 | n/a   | reserved for future expansion (halt)
  3 | 0x01 | JSR a | pushes the address of the next instruction to the stack,
    |      |       | then sets PC to a
  - | 0x02 | -     |
@@ -164,7 +164,7 @@ The value (a) is in the same six bit format as defined earlier.
  - | 0x1c | -     |
  - | 0x1d | -     |
  - | 0x1e | -     |
- - | 0x1f | -     |
+ - | 0x1f | -     | (break)
 ---+------+-------+-------------------------------------------------------------
 
 

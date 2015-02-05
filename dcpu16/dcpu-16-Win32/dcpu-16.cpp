@@ -130,13 +130,19 @@ int CPU::computeOp(unsigned short op, unsigned short A, unsigned short B)
 	//extended opcodes
 	if (op == opsEXT) // - | 0x00 | n/a
 	{
-		unsigned short *a = computeValue(A, false, true); //only use b for values as a is used for the extended opcode
+		unsigned short *a = computeValue(A, false, true); //only use a for values as b is used for the extended opcode
 
 		switch(B)
 		{
 			//reserved
 			case opsSpecialEXT: // - | 0x00 | n/a   | reserved for future expansion
 				halt = true;
+				break;
+
+			case 0x1f: //break
+				computer->step = true;
+				registerDump();
+				memoryDump(computer->memoryDumpAreaStart, computer->memoryDumpAreaSize);
 				break;
 
 			case JSR: // 3 | 0x01 | JSR a | pushes the address of the next instruction to the stack, then sets PC to a
@@ -613,7 +619,7 @@ unsigned short *CPU::computeValue(unsigned short value, bool skip, bool inA)
 void CPU::memoryDump(int start, int length)
 {
 	if (start + length > memorySize) {
-		length = memorySize - start + 1;
+		length = memorySize - start;
 	}
 
 	printf("\nMemory Dump (%04x to %04x):\n", start, (length + start));
