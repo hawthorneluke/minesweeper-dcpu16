@@ -1,0 +1,54 @@
+set pc, get_hardware
+
+
+;グローバル変数
+:monitor dat 0 ;モニタのハードID
+:keyboard dat 0 ;キーボードのハードID
+:clock dat 0 ;クロックのハードID
+
+
+:get_hardware
+hwn z ;繋がってるハードの台数をzに
+
+:hardware_check_loop
+sub z, 1
+ife ex, 0xffff
+set pc, game_setup ;繋がってるハードの全てをチェックしたのでこのループから出る
+hwq z ;代z目のハードの情報を取得
+
+:monitor_check
+;idでモニタチェック
+ifn a, 0xf615
+set pc, keyboard_check
+ifn b, 0x7349
+set pc, keyboard_check
+;idがモニタと一致
+set [monitor], z
+set pc, hardware_check_loop
+
+:keyboard_check
+;idでキーボードチェック
+ifn a, 0x7406
+set pc, clock_check
+ifn b, 0x30cf
+set pc, clock_check
+;idがキーボードと一致
+set [keyboard], z
+set pc, hardware_check_loop
+
+:clock_check
+;idでクロックチェック
+ifn a, 0xb402
+set pc, hardware_check_loop
+ifn b, 0x12d0
+set pc, hardware_check_loop
+;idがキーボードと一致
+set [clock], z
+set pc, hardware_check_loop
+
+
+
+:game_setup
+set a, [monitor]
+set b, [keyboard]
+set c, [clock]
