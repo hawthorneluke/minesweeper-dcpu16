@@ -24,8 +24,9 @@ set pc, get_hardware
 :screen_h dat 12 ;モニタのマスの縦の数
 
 
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 :get_hardware
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 hwn z ;繋がってるハードの台数をzに
 
 :hardware_check_loop
@@ -65,8 +66,9 @@ set [clock], z
 set pc, hardware_check_loop
 
 
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 :game_setup
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;モニタが使うメモリ番地を指定
 set a, 0
@@ -108,8 +110,9 @@ set [a], 0x15 ;5
 
 
 
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 :game_loop ;ゲームのループ
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 jsr get_input_start
 jsr display_field
@@ -119,8 +122,9 @@ set pc, game_loop
 dat 0
 
 
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 :get_input_start ;キーボードからの入力を処理
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 set push, a
 set push, c
 
@@ -190,11 +194,7 @@ set [player_x], a
 set pc, get_input
 
 :get_input_open
-set a, [player_y]
-add a, 1
-ifg a, [field_h]
-set pc, get_input
-set [player_y], a
+jsr open_cell
 set pc, get_input
 
 :get_input_flag
@@ -209,7 +209,149 @@ set pc, pop
 
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+:open_cell ;マスを開く
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+set push, a
+set push, b
+set push, c
+set push, i
+set push, j
+set push, x
+set push, y
+set push, z
+
+jsr get_cell ;aにプレイヤーがいるマスの番地を取得
+
+
+set b, [a]
+shr b, 4
+ife b, 1 ;開いてるなら
+set pc, open_cell_return
+
+set b, [a]
+and b, 0xf
+
+ife b, 0xf
+jsr open_mine
+
+;周りに何個の地雷があるかを確認
+jsr open_empty ;ここでopen_safeで使うレジスタをスタックにプッシュしてあげる
+;（再帰呼び出しでいっぱいスタックにプッシュしてないように）
+
+:open_cell_return
+set z, pop
+set y, pop
+set x, pop
+set j, pop
+set i, pop
+set c, pop
+set b, pop
+set a, pop
+set pc, pop
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+:open_mine ;地雷を開く
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;ゲームオーバー
+set pc, pop
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+:open_empty ;aでの空のマスを開く
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;open_cellでここで使うレジスタを既にスタックにプッシュしてある
+
+
+;aが既に開いてるマスなら戻る
+set b, [a]
+shr b, 4
+ife b, 1 ;開いてるなら
+set pc, open_empty_return
+
+set c, 0 ;周りにある地雷のカウント
+
+;プレイヤーがいるマスの周りのマスを地雷の存在をチェック
+
+;x,y = ここのマス(a)のx,y座標
+set x, a
+sub x, [field_mem]
+mod x, [field_w]
+
+set y, a
+sub y, [field_mem]
+div y, [field_w]
+
+
+
+set j, y
+sub j, 1
+
+:open_empty_j
+
+ifu j, 0
+set pc, open_empty_j_end
+
+ife j, [field_h]
+set pc, open_empty_loop_end
+
+set i, x
+sub i, 1
+
+:open_empty_i
+dat 0x3e0 ;break
+
+ifl i, 0
+set pc, open_empty_i_end
+
+ife i, [field_w]
+set pc, open_empty_i_end
+
+
+set b, j
+mul b, [screen_w]
+add b, i
+add b, [field_mem]
+;bが調べてるマスの番地を持つ
+
+set b, [b]
+and b, 0xf
+ife b, 0xf ;地雷なら
+add c, 1 ;カウント++
+
+:open_empty_i_end
+add i, 1
+set z, i
+sub z, x
+ifn z, 2
+set pc, open_empty_i
+
+:open_empty_j_end
+add j, 1
+set z, j
+sub z, y
+ife z, 2
+set pc, open_empty_loop_end
+set pc, open_empty_j
+
+
+:open_empty_loop_end
+;カウントがcに入ってる
+
+set b, 0x10 ;開いてるマス
+bor b, c ;周りのマスでの地雷の数
+set [a], b ;このマスを書き換え
+
+:open_empty_return
+set pc, pop
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 :flag_cell ;できたらマスに旗を置く
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 set push, a
 set push, b
 
@@ -248,10 +390,12 @@ set pc, pop
 
 
 
-:get_cell ;プレイヤーがいるマスの番地を取得
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+:get_cell ;プレイヤーがいるマスの番地をaに返す
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 set a, [player_y]
-mul a, [screen_w]
+mul a, [field_w]
 add a, [player_x]
 add a, [field_mem]
 ;aはプレイヤーがいるマスの番地を持ってる
@@ -260,8 +404,9 @@ set pc, pop
 
 
 
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 :display_field ;フィールドを出力
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 set push, i
 set push, j
 set push, a
@@ -308,8 +453,9 @@ set pc, pop
 
 
 
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 :draw_to_screen ;モニタに文字aを[i,j]に出力
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 set push, b
 set push, z
 set push, c
@@ -335,8 +481,9 @@ set pc, pop
 
 
 
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 :get_char_for_field_mem ;iとjでマスを指定し、aに時を返す
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 set push, z
 set push, b
 set push, c
@@ -345,7 +492,7 @@ set push, c
 ;c = 0~8: 周りの地雷の数（開いてないマスなら0）、;f: 地雷
 
 set z, j
-mul z, [screen_w]
+mul z, [field_w]
 add z, i
 add z, [field_mem]
 set z, [z]
@@ -380,7 +527,7 @@ set pc, get_char_for_field_mem_return
 
 
 :get_char_for_field_mem_closed
-set a, " "
+set a, "?"
 set pc, get_char_for_field_mem_return
 
 :get_char_for_field_mem_flag
