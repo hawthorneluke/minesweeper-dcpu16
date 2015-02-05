@@ -1122,6 +1122,11 @@ namespace dcpu_16Assembler
                     v = 0x0f;
                     break;
 
+                case "PUSH":
+                case "[--SP]":
+                    v = 0x18;
+                    break;
+
                 case "POP":
                 case "[SP++]":
                     v = 0x18;
@@ -1132,8 +1137,7 @@ namespace dcpu_16Assembler
                     v = 0x19;
                     break;
 
-                case "PUSH":
-                case "[--SP]":
+                case "PICK":
                     v = 0x1a;
                     break;
 
