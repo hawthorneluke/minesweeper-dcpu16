@@ -1,4 +1,4 @@
-﻿Build started 2015/02/05 3:14:24.
+﻿Build started 2015/02/05 21:28:17.
      1>Project "C:\Users\luke\Desktop\MineSweeper\dcpu16\dcpu-16-Win32\dcpu-16-Win32.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"C:\SDL-1.2.15\include" /I"C:\Program Files (x86)\boost\boost_1_49_0" /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt computer.cpp
@@ -19,4 +19,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:00.79
+Time Elapsed 00:00:00.75

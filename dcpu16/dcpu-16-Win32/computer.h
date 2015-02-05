@@ -128,7 +128,10 @@ public:
 	CPU *cpu;
 	
 	bool lockFreq;
-	bool step;
+	bool step = false;
+
+	int memoryDumpAreaStart = 0x0000;
+	int memoryDumpAreaSize = 64;
 
 	int getHardwareCount();
 	void getHardwareInfo(unsigned short i, unsigned short &A, unsigned short &B, unsigned short &C, unsigned short &X, unsigned short &Y);

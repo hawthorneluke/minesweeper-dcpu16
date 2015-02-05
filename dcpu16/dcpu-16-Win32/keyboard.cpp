@@ -102,14 +102,14 @@ void Keyboard::OnEvent(SDL_Event* Event)
 						fKeyPressed = true;
 						if (!computer->step)
 						{
-							printf("Paused. Manual stepping turned on. Press F1 to step, F2 to return back to normal.\n");
+							printf("一時停止。F1でステップして次のCPUサイクルを実行。F2で再生。\n");
 							computer->step = true;
 						}
 						else
 						{
 							computer->cpu->run();
 							computer->cpu->registerDump();
-							computer->cpu->memoryDump(0x8180,64);
+							computer->cpu->memoryDump(computer->memoryDumpAreaStart,computer->memoryDumpAreaSize);
 							//monitor->run();
 						}
 						break;
@@ -120,7 +120,7 @@ void Keyboard::OnEvent(SDL_Event* Event)
 						fKeyPressed = true;
 						if (computer->step)
 						{
-							printf("Manual stepping off. Unpaused.\n");
+							printf("一時停止解除。\n");
 							computer->step = false;
 						}
 						break;
@@ -131,12 +131,12 @@ void Keyboard::OnEvent(SDL_Event* Event)
 						fKeyPressed = true;
 						if (computer->lockFreq)
 						{
-							printf("Frquency lock off.\n");
+							printf("周波数ロック無効\n");
 							computer->lockFreq = false;
 						}
 						else
 						{
-							printf("Frquency lock on (%iKHz).\n", computer->cpu->getFrequency()/1000);
+							printf("周波数ロック有効　(%iKHz)\n", computer->cpu->getFrequency()/1000);
 							computer->lockFreq = true;
 						}
 						break;
