@@ -107,6 +107,110 @@ set [a], 0x15 ;5
 
 
 
+
+
+:game_loop ;ゲームのループ
+
+jsr get_input_start
+jsr display_field
+
+set pc, game_loop
+
+dat 0
+
+
+
+:get_input_start ;キーボードからの入力を処理
+set push, a
+set push, c
+
+:get_input
+
+set a, 1 ;バッファーにある押されたキーを取得
+hwi [keyboard]
+
+ife c, 0 ;バッファーにキーがないなら戻る
+set pc, get_input_return
+
+ife c, 0x80
+set pc, get_input_up
+
+ife c,0x81
+set pc, get_input_down
+
+ife c, 0x82
+set pc, get_input_left
+
+ife c, 0x83
+set pc, get_input_right
+
+ife c, " "
+set pc, get_input_open
+
+ife c, 0x11
+set pc, get_input_open
+
+ife c, "F"
+set pc, get_input_flag
+
+set pc, get_input
+
+
+:get_input_up
+set a, [player_y]
+sub a, 1
+ife a, -1
+set pc, get_input
+set [player_y], a
+set pc, get_input
+
+:get_input_down
+set a, [player_y]
+add a, 1
+ife a, [field_h]
+set pc, get_input
+set [player_y], a
+set pc, get_input
+
+:get_input_left
+set a, [player_x]
+sub a, 1
+ife a, -1
+set pc, get_input
+set [player_x], a
+set pc, get_input
+
+:get_input_right
+set a, [player_x]
+add a, 1
+ife a, [field_w]
+set pc, get_input
+set [player_x], a
+set pc, get_input
+
+:get_input_open
+set a, [player_y]
+add a, 1
+ifg a, [field_h]
+set pc, get_input
+set [player_y], a
+set pc, get_input
+
+:get_input_flag
+set a, [player_y]
+add a, 1
+ifg a, [field_h]
+set pc, get_input
+set [player_y], a
+set pc, get_input
+
+:get_input_return
+set c, pop
+set a, pop
+set pc, pop
+
+
+
 :display_field
 set j, 0
 
@@ -115,10 +219,22 @@ set i, 0
 
 :display_field_i
 
-;マス[i,j]の字を指定
-jsr get_char_for_field_mem
+;プレイヤーがいるならプレイヤーを字を書く
+ife i, [player_x]
+ife j, [player_y]
+set pc, display_field_player
 
+;マス[i,j]の字を書く
+jsr get_char_for_field_mem
 jsr draw_to_screen
+set pc, display_field_player_end
+
+;プレイヤーを字を書く
+:display_field_player
+set a, "P"
+jsr draw_to_screen
+
+:display_field_player_end
 
 add i, 1
 ifn i, [field_w]
@@ -130,13 +246,6 @@ ifn j, [field_h]
 set pc, display_field_j
 
 ;jが一番下についた
-
-
-
-dat 0
-
-
-
 
 
 
@@ -171,6 +280,9 @@ set pc, pop
 
 
 :get_char_for_field_mem ;iとjでマスを指定し、aに時を返す
+set push, z
+set push, b
+set push, c
 
 ;field_mem = 0xbc : b = 0: 開いてないマス、1: 開いてるマス、2:旗。
 ;c = 0~8: 周りの地雷の数（開いてないマスなら0）、;f: 地雷
@@ -207,21 +319,28 @@ set pc, get_char_for_field_mem_open
 ;周りに地雷があるマス
 set a, 48
 add a, c
-set pc, pop
+set pc, get_char_for_field_mem_return
 
 
 :get_char_for_field_mem_closed
 set a, " "
-set pc, pop
+set pc, get_char_for_field_mem_return
 
 :get_char_for_field_mem_flag
 set a, "F"
-set pc, pop
+set pc, get_char_for_field_mem_return
 
 :get_char_for_field_mem_mine
 set a, "X"
-set pc, pop
+set pc, get_char_for_field_mem_return
 
 :get_char_for_field_mem_open
 set a, "0"
+set pc, get_char_for_field_mem_return
+
+
+:get_char_for_field_mem_return
+set c, pop
+set b, pop
+set z, pop
 set pc, pop
