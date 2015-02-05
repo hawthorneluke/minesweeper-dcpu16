@@ -150,9 +150,10 @@ set pc, get_input_open
 ife c, 0x11
 set pc, get_input_open
 
-ife c, "F"
+ife c, "f"
 set pc, get_input_flag
 
+;違うキーだったので次のを確認
 set pc, get_input
 
 
@@ -197,11 +198,7 @@ set [player_y], a
 set pc, get_input
 
 :get_input_flag
-set a, [player_y]
-add a, 1
-ifg a, [field_h]
-set pc, get_input
-set [player_y], a
+jsr flag_cell
 set pc, get_input
 
 :get_input_return
@@ -211,7 +208,60 @@ set pc, pop
 
 
 
-:display_field
+
+:flag_cell ;できたらマスに旗を置く
+set push, a
+set push, b
+
+jsr get_cell ;aにプレイヤーがいるマスの番地を取得
+
+set b, [a]
+shr b, 4
+ifn b, 0 ;セルが開いてない状態でないなら
+set pc, flag_cell_deflag
+
+
+set b, [a]
+and b, 0xf
+bor b, 0x20
+
+set [a], b
+
+set pc, flag_cell_return
+
+:flag_cell_deflag ;旗を消す
+set b, [a]
+shr b, 4
+ifn b, 2 ;旗が置かれてないなら
+set pc, flag_cell_return
+
+;旗が置かれてるので消す
+set b, [a]
+and b, 0xf
+set [a], b
+set pc, flag_cell_return
+
+:flag_cell_return
+set b, pop
+set a, pop
+set pc, pop
+
+
+
+:get_cell ;プレイヤーがいるマスの番地を取得
+
+set a, [player_y]
+mul a, [screen_w]
+add a, [player_x]
+add a, [field_mem]
+;aはプレイヤーがいるマスの番地を持ってる
+
+set pc, pop
+
+
+
+
+:display_field ;フィールドを出力
 set push, i
 set push, j
 set push, a
