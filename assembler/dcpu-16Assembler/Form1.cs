@@ -1160,7 +1160,7 @@ namespace dcpu_16Assembler
                         bool isNum = parseNum(V, out num);
                         if (isNum)
                         {
-                            if (num >= -1 && num <= 0x1f)
+                            if (num >= -1 && num < 0x1f)
                             {
                                 v = (ushort)(num + 0x21);
                             }
