@@ -1,19 +1,9 @@
-﻿Build started 2015/02/06 2:41:28.
+﻿Build started 2015/02/06 2:42:53.
      1>Project "C:\Users\luke\Desktop\MineSweeper\dcpu16\dcpu-16-Win32\dcpu-16-Win32.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"C:\SDL-1.2.15\include" /I"C:\Program Files (x86)\boost\boost_1_49_0" /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt clock.cpp computer.cpp "dcpu-16.cpp" hardware.cpp keyboard.cpp monitor.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"C:\SDL-1.2.15\include" /I"C:\Program Files (x86)\boost\boost_1_49_0" /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt "dcpu-16.cpp"
          dcpu-16.cpp
-     1>c:\users\luke\desktop\minesweeper\dcpu16\dcpu-16-win32\dcpu-16.cpp(239): warning C4333: '>>' : right shift by too large amount, data loss
-         Generating Code...
-     1>cl : Command line warning D9028: minimal rebuild failure, reverting to normal build
-         Compiling...
-         clock.cpp
-         computer.cpp
-     1>c:\users\luke\desktop\minesweeper\dcpu16\dcpu-16-win32\computer.cpp(15): warning C4101: 'Event' : unreferenced local variable
-         hardware.cpp
-         keyboard.cpp
-         monitor.cpp
-         Generating Code...
+     1>c:\users\luke\desktop\minesweeper\dcpu16\dcpu-16-win32\dcpu-16.cpp(240): warning C4333: '>>' : right shift by too large amount, data loss
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\luke\Desktop\MineSweeper\dcpu16\Debug\dcpu-16-Win32.exe" /INCREMENTAL /NOLOGO /LIBPATH:"C:\SDL-1.2.15\lib\x86" SDL.lib SDLmain.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\luke\Desktop\MineSweeper\dcpu16\Debug\dcpu-16-Win32.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\luke\Desktop\MineSweeper\dcpu16\Debug\dcpu-16-Win32.lib" /MACHINE:X86  /NODEFAULTLIB:msvcrt.lib "Debug\dcpu-16-Win32.res"
          Debug\clock.obj
@@ -29,4 +19,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:02.97
+Time Elapsed 00:00:00.86

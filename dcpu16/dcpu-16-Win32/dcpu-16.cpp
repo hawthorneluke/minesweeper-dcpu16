@@ -236,7 +236,8 @@ int CPU::computeOp(unsigned short op, unsigned short A, unsigned short B)
 				case MUL: //2 | 0x04 | MUL b, a | sets b to b*a, sets EX to ((b*a)>>16)&0xffff (treats b, a as unsigned)
 					incCyclesTaken(2);
 					result = (*b) * (*a);
-					reg[regEX] = ((*b)>>WORD_LENGTH)&0xFFFF;
+					//reg[regEX] = ((*b)>>WORD_LENGTH)&0xFFFF;
+					reg[regEX] = ((result) >> WORD_LENGTH) & 0xFFFF;
 					*b = result;
 					break;
 
