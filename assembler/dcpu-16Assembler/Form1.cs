@@ -940,9 +940,7 @@ namespace dcpu_16Assembler
                             }
                         }
                         break;
-                    }
-
-             
+                    }             
 
                 default:
                     op = 0x0;

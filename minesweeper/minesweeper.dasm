@@ -1,3 +1,6 @@
+;break = dat 0x3e0
+
+
 set pc, get_hardware
 
 
@@ -85,26 +88,47 @@ set a, 3
 set b, 0xd ;ピンク
 hwi [monitor]
 
-set a, [monitor_mem]
-set b, 0xf0 ;文字が白、背景が黒
-shl b, 8
-bor b, "A"
-set [a], b
+
+
 
 
 
 
 
 :display_field
-set i, 1
-set j, 1
-set a, "B"
+set j, 0
+
+:display_field_j
+set i, 0
+
+:display_field_i
+
+set a, "X"
+
 jsr draw_to_screen
+
+add i, 1
+ifn i, [field_w]
+set pc, display_field_i
+
+;iが一番右についた
+add j, 1
+ifn j, [field_h]
+set pc, display_field_j
+
+;jが一番下についた
+
+
 
 dat 0
 
 
-:draw_to_screen ;モニタに文字を[i,j]に出力
+:draw_to_screen ;モニタに文字aを[i,j]に出力
+set push, b
+set push, z
+set push, c
+
+
 set b, 0xf0 ;文字が白、背景が黒
 shl b, 8
 bor b, a ;字を追加
@@ -116,4 +140,8 @@ add z, i
 set c, [monitor_mem]
 add c, z
 set [c], b ;メモリに書く
-set pop, pop
+
+set c, pop
+set z, pop
+set b, pop
+set pc, pop
