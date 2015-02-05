@@ -1370,8 +1370,14 @@ namespace dcpu_16Assembler
         {
             //MessageBox.Show(str);
 
+
             bool ok = false;
             num = -1;
+
+            if (str[0] == '"')
+            {
+                return false;
+            }
 
             int indexStart = str.ToLower().IndexOf("0x");
             int indexEnd = 0;
