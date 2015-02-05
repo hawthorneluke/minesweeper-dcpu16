@@ -66,6 +66,9 @@ set [clock], z
 set pc, hardware_check_loop
 
 
+set pc, game_setup
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 :game_setup
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -90,20 +93,53 @@ set a, 3
 set b, 0xd ;ピンク
 hwi [monitor]
 
-
-
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+:field_setup ;フィールドセットアップ
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 set a, [field_mem]
-set [a], 0x20 ;flag
+set b, 0 ;b=field_mem上のポインタ。これがランダムに進まされ、この値に地雷を置く
+set c, [field_w] ;c=field_memの長さ
+mul c, [field_h]
 
-add a, 1
-set [a], 0x1f ;mine
+set j, [mine_count]
 
-add a, 1
-set [a], 0x10 ;0
+:field_setup_j
 
-add a, 1
-set [a], 0x15 ;5
+set x, 3 ;これをランダムな値に
+
+set i, 0
+
+:field_setup_i
+add b, 1
+ife b, c ;bがfield_memを超えたなら0にリセット
+set b, 0
+
+;bに既に地雷があるならスキップ
+set z, a
+add z, b
+set z, [z]
+and z, 0xf
+ife z, 0xf ;地雷がるなら
+set pc, field_setup_i
+
+add i, 1
+ife i, x
+set pc, field_setup_add_mine
+set pc, field_setup_i
+
+:field_setup_add_mine
+;地雷をa+bに置く
+set z, a
+add z, b
+set [z], 0x1f ;地雷
+
+sub j, 1
+ife j, 0
+set pc, field_setup_end
+set pc, field_setup_j
+
+
+:field_setup_end
 
 
 
@@ -327,6 +363,8 @@ set pc, pop
 :open_mine ;地雷を開く
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;ゲームオーバー
+set a, 0xffff
+dat 0x3e0 ;break
 set pc, pop
 
 
