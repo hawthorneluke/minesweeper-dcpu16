@@ -11,6 +11,9 @@
 - この時、引数でロードしたいプログラムのパスを指定する。
 - minesweeper/minesweeper.dcpuを指定してください。
 
+### 今回のソースファイル
+- minesweeper/minesweeper.dasm
+
 ### DCPU16について
 DCPU16はマインクラフトの開発者、Notchが新作のゲーム（0x10c）内に使用すると考えていたコンピュータのCPUです。
 
