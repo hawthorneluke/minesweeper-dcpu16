@@ -1,4 +1,4 @@
-;break = dat 0x3e0
+;break = dat 0x3e0 ;break
 
 
 set pc, get_hardware
@@ -12,8 +12,8 @@ set pc, get_hardware
 :player_y dat 0 ;プレイヤーのy
 
 :field_mem dat 0x9000 ;フィールドデータが始まる番地(0x9000+field_w*field_hまで)
-;0xab : a = 0: 開いてないマス、f: 開いてるマス。
-;b = 0~8: 周りの地雷の数（開いてないマスなら0）、;f: 地雷、e: 地雷付き旗、d: 地雷なし旗
+;field_mem = 0xbc : b = 0: 開いてないマス、1: 開いてるマス、2:旗。
+;c = 0~8: 周りの地雷の数（開いてないマスなら0）、;f: 地雷
 
 :monitor dat 0 ;モニタのハードID
 :keyboard dat 0 ;キーボードのハードID
@@ -91,6 +91,18 @@ hwi [monitor]
 
 
 
+set a, [field_mem]
+set [a], 0x20 ;flag
+
+add a, 1
+set [a], 0x1f ;mine
+
+add a, 1
+set [a], 0x10 ;0
+
+add a, 1
+set [a], 0x15 ;5
+
 
 
 
@@ -103,7 +115,8 @@ set i, 0
 
 :display_field_i
 
-set a, "X"
+;マス[i,j]の字を指定
+jsr get_char_for_field_mem
 
 jsr draw_to_screen
 
@@ -121,6 +134,13 @@ set pc, display_field_j
 
 
 dat 0
+
+
+
+
+
+
+
 
 
 :draw_to_screen ;モニタに文字aを[i,j]に出力
@@ -144,4 +164,64 @@ set [c], b ;メモリに書く
 set c, pop
 set z, pop
 set b, pop
+set pc, pop
+
+
+
+
+
+:get_char_for_field_mem ;iとjでマスを指定し、aに時を返す
+
+;field_mem = 0xbc : b = 0: 開いてないマス、1: 開いてるマス、2:旗。
+;c = 0~8: 周りの地雷の数（開いてないマスなら0）、;f: 地雷
+
+set z, j
+mul z, [screen_w]
+add z, i
+add z, [field_mem]
+set z, [z]
+;zがマス[i,j]のデータを持つ
+
+set b, z
+shr b, 4
+and b, 0x000f
+;b = 0: 開いてないマス、1: 開いてるマス、2:旗。
+
+ife b, 0
+set pc, get_char_for_field_mem_closed
+
+ife b, 2
+set pc, get_char_for_field_mem_flag
+
+;マスが開いてる
+set c, z
+and c, 0x000f
+;c = 0~8: 周りの地雷の数（開いてないマスなら0）、;f: 地雷
+
+ife c, 0xf
+set pc, get_char_for_field_mem_mine
+
+ife c, 0
+set pc, get_char_for_field_mem_open
+
+;周りに地雷があるマス
+set a, 48
+add a, c
+set pc, pop
+
+
+:get_char_for_field_mem_closed
+set a, " "
+set pc, pop
+
+:get_char_for_field_mem_flag
+set a, "F"
+set pc, pop
+
+:get_char_for_field_mem_mine
+set a, "X"
+set pc, pop
+
+:get_char_for_field_mem_open
+set a, "0"
 set pc, pop
