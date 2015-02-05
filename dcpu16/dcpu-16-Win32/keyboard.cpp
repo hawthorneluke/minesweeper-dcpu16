@@ -104,6 +104,9 @@ void Keyboard::OnEvent(SDL_Event* Event)
 						{
 							printf("一時停止。F1でステップして次のCPUサイクルを実行。F2で再生。\n");
 							computer->step = true;
+
+							computer->cpu->registerDump();
+							computer->cpu->memoryDump(computer->memoryDumpAreaStart, computer->memoryDumpAreaSize);
 						}
 						else
 						{
