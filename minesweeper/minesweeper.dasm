@@ -412,7 +412,7 @@ sub i, 1
 
 :open_empty_i
 
-ifl i, 0
+ifu i, 0
 set pc, open_empty_i_end
 
 ife i, [field_w]
@@ -420,7 +420,7 @@ set pc, open_empty_i_end
 
 
 set b, j
-mul b, [screen_w]
+mul b, [field_w]
 add b, i
 add b, [field_mem]
 ;bが調べてるマスの番地を持つ
@@ -429,6 +429,7 @@ set b, [b]
 and b, 0xf
 ife b, 0xf ;地雷なら
 add c, 1 ;カウント++
+
 
 :open_empty_i_end
 add i, 1
