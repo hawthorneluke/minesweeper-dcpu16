@@ -36,7 +36,7 @@ set pc, get_hardware
 :screen_w dat 32 ;モニタのマスの横の数
 :screen_h dat 12 ;モニタのマスの縦の数
 
-:start_screen_text dat "Press Any Key To Start", 1, 1, "Move: Arrow Keys", 1, "Check Mine: Enter/Space", 1, "Set Flag: F", 0
+:start_screen_text dat "Press Any Key To Start", 1, 1, "Move: Arrow Keys", 1, "Check Space: Enter/Space", 1, "Set Flag: F", 0
 :field_size_screen_text dat "Set Field Size", 1, "Change: Up/Down Arrow", 1, "Confirm: Enter", 0
 :field_size_screen_width_text dat "Width: ", 0
 :field_size_screen_height_text dat "Height: ", 0
@@ -303,9 +303,9 @@ set a, 0
 jsr blank_screen
 
 set a, game_won_text
-set b, 0xf0 ;文字が白、背景が黒
-set x, 5
-set y, 5
+set b, 0x90 ;文字が青、背景が黒
+set x, 9
+set y, 4
 jsr draw_text
 
 set a, 0
@@ -465,9 +465,9 @@ set a, 0
 jsr blank_screen
 
 set a, game_over_text
-set b, 0xf0 ;文字が白、背景が黒
-set x, 5
-set y, 5
+set b, 0xc0 ;文字が白、背景が黒
+set x, 10
+set y, 3
 jsr draw_text
 
 set a, 0
@@ -854,7 +854,7 @@ jsr blank_screen
 set a, start_screen_text
 set b, 0xf0 ;文字が白、背景が黒
 set x, 5
-set y, 5
+set y, 3
 jsr draw_text
 
 set a, 0
@@ -894,25 +894,25 @@ jsr blank_screen
 
 set a, field_size_screen_text
 set b, 0xf0 ;文字が白、背景が黒
-set x, 5
-set y, 2
+set x, 6
+set y, 1
 jsr draw_text
 
 set a, field_size_screen_width_text
 set b, 0xf0 ;文字が白、背景が黒
-set x, 5
+set x, 10
 set y, 6
 jsr draw_text
 
 set a, field_size_screen_height_text
 set b, 0xf0 ;文字が白、背景が黒
-set x, 5
+set x, 10
 set y, 8
 jsr draw_text
 
 set a, field_size_screen_mine_text
 set b, 0xf0 ;文字が白、背景が黒
-set x, 5
+set x, 10
 set y, 10
 jsr draw_text
 
@@ -944,7 +944,7 @@ set a, field_size_screen_width_value_text
 set b, 0xf0 ;文字が白、背景が黒
 ife z, 0 ;幅が選択されてるなら
 set b, 0xd0 ;文字がピンク、背景が黒
-set x, 12
+set x, 18
 set y, 6
 jsr draw_text
 
@@ -968,7 +968,7 @@ set a, field_size_screen_height_value_text
 set b, 0xf0 ;文字が白、背景が黒
 ife z, 1 ;高さが選択されてるなら
 set b, 0xd0 ;文字がピンク、背景が黒
-set x, 12
+set x, 18
 set y, 8
 jsr draw_text
 
@@ -992,7 +992,7 @@ set a, field_size_screen_mine_value_text
 set b, 0xf0 ;文字が白、背景が黒
 ife z, 2 ;高さが選択されてるなら
 set b, 0xd0 ;文字がピンク、背景が黒
-set x, 12
+set x, 18
 set y, 10
 jsr draw_text
 
