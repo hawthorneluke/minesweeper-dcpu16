@@ -18,7 +18,7 @@ set pc, get_hardware
 
 :player_x dat 0 ;プレイヤーのx
 :player_y dat 0 ;プレイヤーのy
-:rand_seed dat 0 ;ランダムのシード
+:rand_seed dat 0, 0 ;ランダムのシード 2 words
 :restart dat 0 ;これが1ならゲームがリスタートする
 :player_flash_rate dat 30 ;1秒に60/player_flash_rateでプレイヤーのマーカーが点滅する
 
@@ -160,6 +160,15 @@ set j, [mine_count]
 :field_setup_j
 
 set x, [rand_seed]
+set y, [rand_seed+1]
+mul x, 0x72a8
+mul y, 0x0014
+mul [rand_seed], 0x72a8
+adx x, y
+add [rand_seed], 1
+add x, ex
+set [rand_seed+1], x
+
 mod x, c
 
 set i, 0
@@ -844,9 +853,12 @@ set a, 0
 hwi [keyboard] ;キーボードのバッファーをクリア
 
 set i, 0
+set j, 0
 
 :start_screen_get_key
 add i, 1 ;ここでの待ち時間を数える（これと押されたキーでランダムのシードを作る）
+add j, ex ;iがオーバーフローしたならj++
+
 set a, 1
 hwi [keyboard]
 
@@ -855,7 +867,10 @@ set pc, start_screen_get_key
 
 ;キーが押されたなら
 mul i, c
+add ex, 1
+mul j, ex
 set [rand_seed], i
+set [rand_seed+1], j
 
 set a, 0
 jsr blank_screen
