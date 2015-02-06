@@ -13,7 +13,7 @@ set pc, get_hardware
 :field_h_min dat 4; フィールドの最少の高さ
 
 :mine_count dat 5 ;地雷の数
-:mine_count_max dat 100 ;地雷の最大の数
+:mine_count_max dat 99 ;地雷の最大の数
 :mine_count_min dat 1 ;地雷の最少の数
 
 :player_x dat 0 ;プレイヤーのx
@@ -38,8 +38,10 @@ set pc, get_hardware
 :field_size_screen_text dat "Set Field Size", 1, "Change: Up/Down Arrow", 1, "Confirm: Enter", 0
 :field_size_screen_width_text dat "Width: ", 0
 :field_size_screen_height_text dat "Height: ", 0
+:field_size_screen_mine_text dat "Mines: ", 0
 :field_size_screen_width_value_text dat 0, 0, 0 ;2桁
-:field_size_screen_height_value_text dat 0, 0, 0; 2桁
+:field_size_screen_height_value_text dat 0, 0, 0 ;2桁
+:field_size_screen_mine_value_text dat 0, 0, 0 ;2桁
 :game_won_text dat "You Win!", 1, 1, "Restart: Enter", 0
 :game_over_text dat "Game Over", 1, 1, "Restart: Enter", 0
 
@@ -187,6 +189,12 @@ set [z], 0x0f ;地雷
 sub j, 1
 ife j, 0
 set pc, field_setup_end
+
+set y, [mine_count]
+sub y, j
+ife y, c ;画面が地雷でいっぱいなら
+set pc, field_setup_end
+
 set pc, field_setup_j
 
 
@@ -826,25 +834,29 @@ set x, 5
 set y, 8
 jsr draw_text
 
+set a, field_size_screen_mine_text
+set b, 0xf0 ;文字が白、背景が黒
+set x, 5
+set y, 10
+jsr draw_text
+
 
 set a, 0
 hwi [keyboard] ;キーボードのバッファーをクリア
 
 set z, 0
-set i, [field_w]
-set j, [field_h]
 
 :field_size_screen_get_key
 
 ;幅の10位
-set a, i
+set a, [field_w]
 div a, 10
 add a, 48
 set b, field_size_screen_width_value_text
 set [b], a
 
 ;幅の1位
-set a, i
+set a, [field_w]
 mod a, 10
 add a, 48
 set b, field_size_screen_width_value_text
@@ -861,14 +873,14 @@ set y, 6
 jsr draw_text
 
 ;高さの10位
-set a, j
+set a, [field_h]
 div a, 10
 add a, 48
 set b, field_size_screen_height_value_text
 set [b], a
 
 ;高さの1位
-set a, j
+set a, [field_h]
 mod a, 10
 add a, 48
 set b, field_size_screen_height_value_text
@@ -884,6 +896,31 @@ set x, 12
 set y, 8
 jsr draw_text
 
+;地雷の10位
+set a, [mine_count]
+div a, 10
+add a, 48
+set b, field_size_screen_mine_value_text
+set [b], a
+
+;地雷の1位
+set a, [mine_count]
+mod a, 10
+add a, 48
+set b, field_size_screen_mine_value_text
+add b, 1
+set [b], a
+
+;地雷を書く
+set a, field_size_screen_mine_value_text
+set b, 0xf0 ;文字が白、背景が黒
+ife z, 2 ;高さが選択されてるなら
+set b, 0xd0 ;文字がピンク、背景が黒
+set x, 12
+set y, 10
+jsr draw_text
+
+;キーを取得
 set a, 1
 hwi [keyboard]
 
@@ -898,51 +935,77 @@ set pc, field_size_screen_key_enter
 
 set pc, field_size_screen_get_key
 
+
 :field_size_screen_key_up
 ife z, 0 ;幅
 set pc, field_size_screen_width_up
+ife z, 1 ;高さ
+set pc, field_size_screen_height_up
 
-;高さ
-add j, 1
-ifg j, [field_h_max]
-set j, [field_h_max]
+;地雷
+set i, [mine_count]
+add i, 1
+ifg i, [mine_count_max]
+set i, [mine_count_max]
+set [mine_count], i
 set pc, field_size_screen_get_key
 
 :field_size_screen_width_up ;幅
+set i, [field_w]
 add i, 1
 ifg i, [field_w_max]
 set i, [field_w_max]
+set [field_w], i
+set pc, field_size_screen_get_key
+
+:field_size_screen_height_up ;高さ
+set i, [field_h]
+add i, 1
+ifg i, [field_h_max]
+set i, [field_h_max]
+set [field_h], i
 set pc, field_size_screen_get_key
 
 
 :field_size_screen_key_down
 ife z, 0 ;幅
 set pc, field_size_screen_width_down
+ife z, 1 ;高さ
+set pc, field_size_screen_height_down
 
-;高さ
-sub j, 1
-ifl j, [field_h_min]
-set j, [field_h_min]
+;地雷
+set i, [mine_count]
+sub i, 1
+ifl i, [mine_count_min]
+set i, [mine_count_min]
+set [mine_count], i
 set pc, field_size_screen_get_key
 
 :field_size_screen_width_down ;幅
+set i, [field_w]
 sub i, 1
 ifl i, [field_w_min]
 set i, [field_w_min]
+set [field_w], i
+set pc, field_size_screen_get_key
+
+:field_size_screen_height_down ;高さ
+set i, [field_h]
+sub i, 1
+ifl i, [field_h_min]
+set i, [field_h_min]
+set [field_h], i
 set pc, field_size_screen_get_key
 
 
 :field_size_screen_key_enter
 add z, 1
-ife z, 2
+ife z, 3
 set pc, field_size_screen_end
 set pc, field_size_screen_get_key
 
 
 :field_size_screen_end
-set [field_w], i
-set [field_h], j
-
 set a, 0
 jsr blank_screen
 
