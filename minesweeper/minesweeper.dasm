@@ -390,11 +390,12 @@ shr b, 4
 ife b, 1 ;開いてるなら
 set pc, open_cell_return
 
+ife b, 2 ;旗ついてるなら
+set pc, open_cell_return ;開かせない
+
 set b, [a]
 and b, 0xf
-
-
-ife b, 0xf
+ife b, 0xf ;地雷なら
 set pc, open_mine
 
 
