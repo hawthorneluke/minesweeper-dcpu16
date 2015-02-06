@@ -34,14 +34,14 @@ set pc, get_hardware
 :screen_w dat 32 ;モニタのマスの横の数
 :screen_h dat 12 ;モニタのマスの縦の数
 
-:start_screen_text dat "Press Any Key To Start", 1, "Move: Arrow Keys", 1, "Check Mine: Enter/Space", 1, "Set Flag: F", 0
+:start_screen_text dat "Press Any Key To Start", 1, 1, "Move: Arrow Keys", 1, "Check Mine: Enter/Space", 1, "Set Flag: F", 0
 :field_size_screen_text dat "Set Field Size", 1, "Change: Up/Down Arrow", 1, "Confirm: Enter", 0
 :field_size_screen_width_text dat "Width: ", 0
 :field_size_screen_height_text dat "Height: ", 0
 :field_size_screen_width_value_text dat 0, 0, 0 ;2桁
 :field_size_screen_height_value_text dat 0, 0, 0; 2桁
-:game_won_text dat "You Win!", 0
-:game_over_text dat "Game Over", 0
+:game_won_text dat "You Win!", 1, 1, "Restart: Enter", 0
+:game_over_text dat "Game Over", 1, 1, "Restart: Enter", 0
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -296,7 +296,7 @@ hwi [keyboard] ;キーボードのバッファーをクリア
 set a, 1
 hwi [keyboard]
 
-ife c, 0 ;キーがまだ押されてないなら待ち続ける
+ifn c, 0x11 ;エンタがまだ押されてないなら待ち続ける
 set pc, game_won_get_key
 
 ;キーが押されたなら
@@ -458,7 +458,7 @@ hwi [keyboard] ;キーボードのバッファーをクリア
 set a, 1
 hwi [keyboard]
 
-ife c, 0 ;キーがまだ押されてないなら待ち続ける
+ifn c, 0x11 ;エンタがまだ押されてないなら待ち続ける
 set pc, open_mine_get_key
 
 ;キーが押されたなら
@@ -854,6 +854,8 @@ set [b], a
 ;幅を書く
 set a, field_size_screen_width_value_text
 set b, 0xf0 ;文字が白、背景が黒
+ife z, 0 ;幅が選択されてるなら
+set b, 0xd0 ;文字がピンク、背景が黒
 set x, 12
 set y, 6
 jsr draw_text
@@ -876,6 +878,8 @@ set [b], a
 ;高さを書く
 set a, field_size_screen_height_value_text
 set b, 0xf0 ;文字が白、背景が黒
+ife z, 1 ;高さが選択されてるなら
+set b, 0xd0 ;文字がピンク、背景が黒
 set x, 12
 set y, 8
 jsr draw_text
