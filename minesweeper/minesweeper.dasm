@@ -12,6 +12,7 @@ set pc, get_hardware
 :player_y dat 0 ;プレイヤーのy
 :rand_seed dat 0 ;ランダムのシード
 :restart dat 0 ;これが1ならゲームがリスタートする
+:player_flash_rate dat 30 ;1秒に60/player_flash_rateでプレイヤーのマーカーが点滅する
 
 :field_mem dat 0x4000 ;フィールドデータが始まる番地(field_mem+field_w*field_hまで)
 ;field_mem = 0xbc : b = 0: 開いてないマス、1: 開いてるマス、2:旗。
@@ -98,6 +99,11 @@ hwi [monitor]
 set a, 3
 set b, 0xd ;ピンク
 hwi [monitor]
+
+;クロックを開始（プレイヤーのマーカーを点滅させるため）
+set a, 0
+set b, [player_flash_rate]
+hwi [clock]
 
 set [restart], 0
 set [player_x], 0
@@ -597,6 +603,11 @@ set pc, pop
 set push, i
 set push, j
 set push, a
+set push, c
+
+set a, 1
+hwi [clock] ;cにゲームの開始からクロックがtickした回数を返す
+mod c, 2
 
 set j, 0
 
@@ -608,6 +619,7 @@ set i, 0
 ;プレイヤーがいるならプレイヤーを字を書く
 ife i, [player_x]
 ife j, [player_y]
+ife c, 1
 set pc, display_field_player
 
 ;マス[i,j]の字を書く
@@ -633,6 +645,7 @@ set pc, display_field_j
 
 ;jが一番下についた
 
+set c, pop
 set a, pop
 set j, pop
 set i, pop
