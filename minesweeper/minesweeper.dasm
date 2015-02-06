@@ -24,6 +24,8 @@ set pc, get_hardware
 :screen_w dat 32 ;モニタのマスの横の数
 :screen_h dat 12 ;モニタのマスの縦の数
 
+:start_screen_text dat "Press Any Key To Start", 0
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 :get_hardware
@@ -101,6 +103,12 @@ set pc, start_screen
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 :start_screen ;スタート画面（これをランダムのシードを生成するために使う）
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+set a, start_screen_text
+set b, 0xf0 ;文字が白、背景が黒
+set x, 5
+set y, 5
+jsr draw_text
+
 set a, 0
 hwi [keyboard] ;キーボードのバッファーをクリア
 
@@ -118,7 +126,82 @@ set pc, start_screen_get_key
 mul i, c
 set [rand_seed], i
 
+set a, 0
+jsr blank_screen
+
 set pc, field_setup
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+:draw_text ;aの番地にある文字列をモニタのx,yにbの色で書く
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+set push, a
+set push, b
+set push, c
+set push, x
+set push, y
+set push, z
+set push, i
+
+:draw_text_start
+set c, b
+shl c, 8
+bor c, [a] ;字を追加
+
+set z, y
+mul z, [screen_w]
+add z, x
+
+set i, [monitor_mem]
+add i, z
+set [i], c ;メモリに書く
+
+add a, 1
+ife [a], 0
+set pc, draw_text_end
+
+add x, 1
+set pc, draw_text_start
+
+
+:draw_text_end
+set i, pop
+set z, pop
+set y, pop
+set x, pop
+set c, pop
+set b, pop
+set a, pop
+set pc, pop
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+:blank_screen ;モニタのメモリを全てaにあるデータで上書き
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+set push, i
+set push, j
+set push, b
+
+set i, 0
+set j, [screen_w]
+mul j, [screen_h]
+
+:blank_screen_start
+set b, i
+add b, [monitor_mem]
+set [b], a
+
+add i, 1
+ife i, j
+set pc, blank_screen_end
+set pc, blank_screen_start
+
+:blank_screen_end
+set b, pop
+set j, pop
+set i, pop
+set pc, pop
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -169,7 +252,7 @@ set pc, field_setup_j
 
 
 :field_setup_end
-
+set pc, game_loop
 
 
 
