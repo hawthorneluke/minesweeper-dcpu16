@@ -7,13 +7,13 @@
 - (アセンブラは.Net Framework 4使用)
 
 ### 実行方法
-- dcpu16/Releaseディレクトリ内のdcpu-16-Win32をWindowsのコマンドプロンプトから実行する。
+- /dcpu16/Releaseディレクトリ内のdcpu-16-Win32をWindowsのコマンドプロンプトから実行する。
 - この時、引数でロードしたいプログラムのパスを指定する。
-- minesweeper/minesweeper.dcpuを指定してください。
+- /minesweeper/minesweeper.dcpuを指定してください。
 - 大きなフィールドだとデフォルトの100KHzじゃ遅いので、F3で周波数ロックを解除するとかなり早くなります。
 
 ### 今回のソースファイル
-- minesweeper/minesweeper.dasm
+- /minesweeper/minesweeper.dasm
 
 ### DCPU16について
 DCPU16はマインクラフトの開発者、Notchが新作のゲーム（0x10c）内に使用すると考えていたコンピュータのCPUです。
