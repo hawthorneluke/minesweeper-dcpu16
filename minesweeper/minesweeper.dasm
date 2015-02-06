@@ -37,7 +37,7 @@ set pc, get_hardware
 :screen_h dat 12 ;モニタのマスの縦の数
 
 :start_screen_text dat "Press Any Key To Start", 1, 1, "Move: Arrow Keys", 1, "Check Space: Enter/Space", 1, "Set Flag: F", 0
-:field_size_screen_text dat "Set Field Size", 1, "Change: Up/Down Arrow", 1, "Confirm: Enter", 0
+:field_size_screen_text dat "Set Field Size", 1, "Change: Arrow Keys", 1, "Confirm: Enter", 0
 :field_size_screen_width_text dat "Width: ", 0
 :field_size_screen_height_text dat "Height: ", 0
 :field_size_screen_mine_text dat "Mines: ", 0
@@ -466,7 +466,7 @@ jsr blank_screen
 
 set a, game_over_text
 set b, 0xc0 ;文字が白、背景が黒
-set x, 10
+set x, 9
 set y, 3
 jsr draw_text
 
@@ -894,7 +894,7 @@ jsr blank_screen
 
 set a, field_size_screen_text
 set b, 0xf0 ;文字が白、背景が黒
-set x, 6
+set x, 9
 set y, 1
 jsr draw_text
 
@@ -1006,17 +1006,23 @@ set pc, field_size_screen_key_up
 ife c, 0x81 ;下
 set pc, field_size_screen_key_down
 
+ife c, 0x82 ;左
+set pc, field_size_screen_key_left
+
+ife c, 0x83 ;右
+set pc, field_size_screen_key_right
+
 ife c, 0x11 ;エンタ
 set pc, field_size_screen_key_enter
 
 set pc, field_size_screen_get_key
 
 
-:field_size_screen_key_up
+:field_size_screen_key_right
 ife z, 0 ;幅
-set pc, field_size_screen_width_up
+set pc, field_size_screen_width_right
 ife z, 1 ;高さ
-set pc, field_size_screen_height_up
+set pc, field_size_screen_height_right
 
 ;地雷
 set i, [mine_count]
@@ -1026,7 +1032,7 @@ set i, [mine_count_max]
 set [mine_count], i
 set pc, field_size_screen_get_key
 
-:field_size_screen_width_up ;幅
+:field_size_screen_width_right ;幅
 set i, [field_w]
 add i, 1
 ifg i, [field_w_max]
@@ -1034,7 +1040,7 @@ set i, [field_w_max]
 set [field_w], i
 set pc, field_size_screen_get_key
 
-:field_size_screen_height_up ;高さ
+:field_size_screen_height_right ;高さ
 set i, [field_h]
 add i, 1
 ifg i, [field_h_max]
@@ -1043,11 +1049,11 @@ set [field_h], i
 set pc, field_size_screen_get_key
 
 
-:field_size_screen_key_down
+:field_size_screen_key_left
 ife z, 0 ;幅
-set pc, field_size_screen_width_down
+set pc, field_size_screen_width_left
 ife z, 1 ;高さ
-set pc, field_size_screen_height_down
+set pc, field_size_screen_height_left
 
 ;地雷
 set i, [mine_count]
@@ -1057,7 +1063,7 @@ set i, [mine_count_min]
 set [mine_count], i
 set pc, field_size_screen_get_key
 
-:field_size_screen_width_down ;幅
+:field_size_screen_width_left ;幅
 set i, [field_w]
 sub i, 1
 ifl i, [field_w_min]
@@ -1065,7 +1071,7 @@ set i, [field_w_min]
 set [field_w], i
 set pc, field_size_screen_get_key
 
-:field_size_screen_height_down ;高さ
+:field_size_screen_height_left ;高さ
 set i, [field_h]
 sub i, 1
 ifl i, [field_h_min]
@@ -1074,11 +1080,20 @@ set [field_h], i
 set pc, field_size_screen_get_key
 
 
-:field_size_screen_key_enter
-add z, 1
-ife z, 3
-set pc, field_size_screen_end
+:field_size_screen_key_up
+sub z, 1
+ifu z, 0
+set z, 0
 set pc, field_size_screen_get_key
+
+:field_size_screen_key_down
+add z, 1
+ifg z, 2
+set z, 2
+set pc, field_size_screen_get_key
+
+:field_size_screen_key_enter
+set pc, field_size_screen_end
 
 
 :field_size_screen_end
