@@ -26,6 +26,8 @@ set pc, get_hardware
 ;field_mem = 0xbc : b = 0: 開いてないマス、1: 開いてるマス、2:旗。
 ;c = 0~8: 周りの地雷の数（開いてないマスなら0）、;f: 地雷
 
+:open_cell_push_count ;open_emptyメソッドでレジスタ足りなくなったから、プッシュした回数をこれで記録する
+
 :monitor dat 0 ;モニタのハードID
 :keyboard dat 0 ;キーボードのハードID
 :clock dat 0 ;クロックのハードID
@@ -175,9 +177,9 @@ and z, 0xf
 ife z, 0xf ;地雷がるなら
 set pc, field_setup_i
 
-add i, 1
 ife i, x
 set pc, field_setup_add_mine
+add i, 1
 set pc, field_setup_i
 
 :field_setup_add_mine
@@ -499,6 +501,9 @@ set y, a
 sub y, [field_mem]
 div y, [field_w]
 
+set z, 0
+set [open_cell_push_count], z ;レジスタ足りなくなったから、何回プッシュしたかをこれで数える
+
 
 
 set j, y
@@ -523,6 +528,11 @@ set pc, open_empty_i_end
 ife i, [field_w]
 set pc, open_empty_i_end
 
+;このマスを無視
+ife i, x
+ife j, y
+set pc, open_empty_i_end
+
 
 set b, j
 mul b, [field_w]
@@ -532,9 +542,26 @@ add b, [field_mem]
 
 set b, [b]
 and b, 0xf
-ife b, 0xf ;地雷なら
-add c, 1 ;カウント++
+ifn b, 0xf ;地雷でないなら
+set pc, open_empty_is_empty
 
+;地雷なら
+add c, 1 ;カウント++
+set pc, open_empty_i_end
+
+;地雷でないなら
+:open_empty_is_empty
+set b, j
+mul b, [field_w]
+add b, i
+add b, [field_mem]
+
+set push, b ;プッシュの回数は最終的に8-cになる
+set z, [open_cell_push_count]
+add z, 1
+set [open_cell_push_count], z
+
+set pc, open_empty_i_end
 
 :open_empty_i_end
 add i, 1
@@ -558,6 +585,32 @@ set pc, open_empty_j
 set b, 0x10 ;開いてるマス
 bor b, c ;周りのマスでの地雷の数
 set [a], b ;このマスを書き換え
+
+set i, [open_cell_push_count]
+;iがプッシュした回数を持つ
+
+;dat 0x3e0 ;break
+ife c, 0
+set pc, open_empty_pop_loop
+set pc, open_empty_pop_all
+
+;カウントが0だったので周りのマスでこれを再帰呼び出し
+:open_empty_pop_loop
+set a, pop
+sub i, 1
+set push, i
+jsr open_empty
+set i, pop
+ifn i, 0
+set pc, open_empty_pop_loop
+set pc, open_empty_return
+
+:open_empty_pop_all ;再帰呼び出しなしで全てをポップ
+set z, pop
+sub i, 1
+ifn i, 0
+set pc, open_empty_pop_all
+set pc, open_empty_return
 
 :open_empty_return
 set pc, pop
@@ -748,7 +801,7 @@ set pc, get_char_for_field_mem_return
 
 
 :get_char_for_field_mem_closed
-set a, "?"
+set a, "."
 set pc, get_char_for_field_mem_return
 
 :get_char_for_field_mem_flag
