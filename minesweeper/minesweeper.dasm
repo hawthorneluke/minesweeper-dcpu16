@@ -7,7 +7,15 @@ set pc, get_hardware
 ;グローバル変数
 :field_w dat 5 ;フィールドの幅
 :field_h dat 5 ;フィールドの高さ
+:field_w_max dat 32 ;フィールドの最大の幅
+:field_h_max dat 12 ;フィールドの最大の高さ
+:field_w_min dat 4; フィールドの最少の幅
+:field_h_min dat 4; フィールドの最少の高さ
+
 :mine_count dat 5 ;地雷の数
+:mine_count_max dat 100 ;地雷の最大の数
+:mine_count_min dat 1 ;地雷の最少の数
+
 :player_x dat 0 ;プレイヤーのx
 :player_y dat 0 ;プレイヤーのy
 :rand_seed dat 0 ;ランダムのシード
@@ -27,6 +35,11 @@ set pc, get_hardware
 :screen_h dat 12 ;モニタのマスの縦の数
 
 :start_screen_text dat "Press Any Key To Start", 1, "Move: Arrow Keys", 1, "Check Mine: Enter/Space", 1, "Set Flag: F", 0
+:field_size_screen_text dat "Set Field Size", 1, "Change: Up/Down Arrow", 1, "Confirm: Enter", 0
+:field_size_screen_width_text dat "Width: ", 0
+:field_size_screen_height_text dat "Height: ", 0
+:field_size_screen_width_value_text dat 0, 0, 0 ;2桁
+:field_size_screen_height_value_text dat 0, 0, 0; 2桁
 :game_won_text dat "You Win!", 0
 :game_over_text dat "Game Over", 0
 
@@ -782,6 +795,149 @@ set pc, start_screen_get_key
 ;キーが押されたなら
 mul i, c
 set [rand_seed], i
+
+set a, 0
+jsr blank_screen
+
+set pc, field_size_screen
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+:field_size_screen ;スタート画面（これをランダムのシードを生成するために使う）
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+set a, 0
+jsr blank_screen
+
+set a, field_size_screen_text
+set b, 0xf0 ;文字が白、背景が黒
+set x, 5
+set y, 2
+jsr draw_text
+
+set a, field_size_screen_width_text
+set b, 0xf0 ;文字が白、背景が黒
+set x, 5
+set y, 6
+jsr draw_text
+
+set a, field_size_screen_height_text
+set b, 0xf0 ;文字が白、背景が黒
+set x, 5
+set y, 8
+jsr draw_text
+
+
+set a, 0
+hwi [keyboard] ;キーボードのバッファーをクリア
+
+set z, 0
+set i, [field_w]
+set j, [field_h]
+
+:field_size_screen_get_key
+
+;幅の10位
+set a, i
+div a, 10
+add a, 48
+set b, field_size_screen_width_value_text
+set [b], a
+
+;幅の1位
+set a, i
+mod a, 10
+add a, 48
+set b, field_size_screen_width_value_text
+add b, 1
+set [b], a
+
+;幅を書く
+set a, field_size_screen_width_value_text
+set b, 0xf0 ;文字が白、背景が黒
+set x, 12
+set y, 6
+jsr draw_text
+
+;高さの10位
+set a, j
+div a, 10
+add a, 48
+set b, field_size_screen_height_value_text
+set [b], a
+
+;高さの1位
+set a, j
+mod a, 10
+add a, 48
+set b, field_size_screen_height_value_text
+add b, 1
+set [b], a
+
+;高さを書く
+set a, field_size_screen_height_value_text
+set b, 0xf0 ;文字が白、背景が黒
+set x, 12
+set y, 8
+jsr draw_text
+
+set a, 1
+hwi [keyboard]
+
+ife c, 0x80 ;上
+set pc, field_size_screen_key_up
+
+ife c, 0x81 ;下
+set pc, field_size_screen_key_down
+
+ife c, 0x11 ;エンタ
+set pc, field_size_screen_key_enter
+
+set pc, field_size_screen_get_key
+
+:field_size_screen_key_up
+ife z, 0 ;幅
+set pc, field_size_screen_width_up
+
+;高さ
+add j, 1
+ifg j, [field_h_max]
+set j, [field_h_max]
+set pc, field_size_screen_get_key
+
+:field_size_screen_width_up ;幅
+add i, 1
+ifg i, [field_w_max]
+set i, [field_w_max]
+set pc, field_size_screen_get_key
+
+
+:field_size_screen_key_down
+ife z, 0 ;幅
+set pc, field_size_screen_width_down
+
+;高さ
+sub j, 1
+ifl j, [field_h_min]
+set j, [field_h_min]
+set pc, field_size_screen_get_key
+
+:field_size_screen_width_down ;幅
+sub i, 1
+ifl i, [field_w_min]
+set i, [field_w_min]
+set pc, field_size_screen_get_key
+
+
+:field_size_screen_key_enter
+add z, 1
+ife z, 2
+set pc, field_size_screen_end
+set pc, field_size_screen_get_key
+
+
+:field_size_screen_end
+set [field_w], i
+set [field_h], j
 
 set a, 0
 jsr blank_screen
