@@ -10,6 +10,7 @@ set pc, get_hardware
 :mine_count dat 5 ;地雷の数
 :player_x dat 0 ;プレイヤーのx
 :player_y dat 0 ;プレイヤーのy
+:rand_seed dat 0 ;ランダムのシード
 
 :field_mem dat 0x9000 ;フィールドデータが始まる番地(0x9000+field_w*field_hまで)
 ;field_mem = 0xbc : b = 0: 開いてないマス、1: 開いてるマス、2:旗。
@@ -93,6 +94,33 @@ set a, 3
 set b, 0xd ;ピンク
 hwi [monitor]
 
+set pc, start_screen
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+:start_screen ;スタート画面（これをランダムのシードを生成するために使う）
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+set a, 0
+hwi [keyboard] ;キーボードのバッファーをクリア
+
+set i, 0
+
+:start_screen_get_key
+add i, 1 ;ここでの待ち時間を数える（これと押されたキーでランダムのシードを作る）
+set a, 1
+hwi [keyboard]
+
+ife c, 0 ;キーがまだ押されてないなら待ち続ける
+set pc, start_screen_get_key
+
+;キーが押されたなら
+mul i, c
+set [rand_seed], i
+
+set pc, field_setup
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 :field_setup ;フィールドセットアップ
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -105,7 +133,8 @@ set j, [mine_count]
 
 :field_setup_j
 
-set x, 3 ;これをランダムな値に
+set x, [rand_seed]
+mod x, c
 
 set i, 0
 
