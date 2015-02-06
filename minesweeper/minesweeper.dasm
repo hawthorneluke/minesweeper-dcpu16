@@ -686,6 +686,7 @@ set pc, pop
 set push, i
 set push, j
 set push, a
+set push, b
 set push, c
 
 set a, 1
@@ -713,6 +714,7 @@ set pc, display_field_player_end
 ;プレイヤーを字を書く
 :display_field_player
 set a, "P"
+set b, 0xd0 ;ピンク
 jsr draw_to_screen
 
 :display_field_player_end
@@ -729,6 +731,7 @@ set pc, display_field_j
 ;jが一番下についた
 
 set c, pop
+set b, pop
 set a, pop
 set j, pop
 set i, pop
@@ -737,14 +740,12 @@ set pc, pop
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-:draw_to_screen ;モニタに文字aを[i,j]に出力
+:draw_to_screen ;モニタに文字aを色bで[i,j]に出力
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 set push, b
 set push, z
 set push, c
 
-
-set b, 0xf0 ;文字が白、背景が黒
 shl b, 8
 bor b, a ;字を追加
 
@@ -765,11 +766,13 @@ set pc, pop
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-:get_char_for_field_mem ;iとjでマスを指定し、aに時を返す
+:get_char_for_field_mem ;iとjでマスを指定し、aに字、bに色を返す
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 set push, z
-set push, b
+set push, x
 set push, c
+
+set b, 0xf0 ;黒に白
 
 ;field_mem = 0xbc : b = 0: 開いてないマス、1: 開いてるマス、2:旗。
 ;c = 0~8: 周りの地雷の数（開いてないマスなら0）、;f: 地雷
@@ -781,15 +784,15 @@ add z, [field_mem]
 set z, [z]
 ;zがマス[i,j]のデータを持つ
 
-set b, z
-shr b, 4
-and b, 0x000f
-;b = 0: 開いてないマス、1: 開いてるマス、2:旗。
+set x, z
+shr x, 4
+and x, 0x000f
+;x = 0: 開いてないマス、1: 開いてるマス、2:旗。
 
-ife b, 0
+ife x, 0
 set pc, get_char_for_field_mem_closed
 
-ife b, 2
+ife x, 2
 set pc, get_char_for_field_mem_flag
 
 ;マスが開いてる
@@ -806,29 +809,34 @@ set pc, get_char_for_field_mem_open
 ;周りに地雷があるマス
 set a, 48
 add a, c
+set b, 0xf0 ;白
 set pc, get_char_for_field_mem_return
 
 
 :get_char_for_field_mem_closed
 set a, "."
+set b, 0xf0 ;白
 set pc, get_char_for_field_mem_return
 
 :get_char_for_field_mem_flag
 set a, "F"
+set b, 0xc0 ;赤
 set pc, get_char_for_field_mem_return
 
 :get_char_for_field_mem_mine
 set a, "X"
+set b, 0xc0 ;赤
 set pc, get_char_for_field_mem_return
 
 :get_char_for_field_mem_open
-set a, "0"
+set a, "-"
+set b, 0x80 ;灰色
 set pc, get_char_for_field_mem_return
 
 
 :get_char_for_field_mem_return
 set c, pop
-set b, pop
+set x, pop
 set z, pop
 set pc, pop
 
