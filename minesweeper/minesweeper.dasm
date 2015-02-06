@@ -5,14 +5,14 @@ set pc, get_hardware
 
 
 ;グローバル変数
-:field_w dat 5 ;フィールドの幅
-:field_h dat 5 ;フィールドの高さ
+:field_w dat 32 ;フィールドの幅
+:field_h dat 12 ;フィールドの高さ
 :field_w_max dat 32 ;フィールドの最大の幅
 :field_h_max dat 12 ;フィールドの最大の高さ
 :field_w_min dat 4; フィールドの最少の幅
 :field_h_min dat 4; フィールドの最少の高さ
 
-:mine_count dat 5 ;地雷の数
+:mine_count dat 40 ;地雷の数
 :mine_count_max dat 99 ;地雷の最大の数
 :mine_count_min dat 1 ;地雷の最少の数
 
