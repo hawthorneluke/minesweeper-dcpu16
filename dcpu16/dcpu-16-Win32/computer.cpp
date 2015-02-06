@@ -138,9 +138,15 @@ bool Computer::OnInit(char args[])
 			i++;
 		}
 
+		inFile.close();
+
+	}
+	else {
+		printf("ファイル %s を開けませんでした\n", args);
+		inFile.close();
+		return false;
 	}
 
-	inFile.close();
 
 	return true;
 }
@@ -275,7 +281,7 @@ int main(int argc, char* argv[])
 
 	computer.step = startStepping;
 
-	if (computer.OnInit(argv[1]) == false) {
+	if (computer.OnInit(fname) == false) {
 		return -1;
 	}
 
@@ -286,6 +292,6 @@ int main(int argc, char* argv[])
 	}
 	
  
-    return computer.OnExecute(argv[1]);	
+	return computer.OnExecute(fname);
 }
 
