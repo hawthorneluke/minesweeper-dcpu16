@@ -7,9 +7,14 @@
 - (アセンブラは.Net Framework 4使用)
 
 ### 実行方法
-- /dcpu16/Releaseディレクトリ内のdcpu-16-Win32をWindowsのコマンドプロンプトから実行する。
+- /dcpu16/Releaseディレクトリ内のdcpu-16-Win32.exeをWindowsのコマンドプロンプトから実行する。
 - この時、引数でロードしたいプログラムのパスを指定する。
 - /minesweeper/minesweeper.dcpuを指定してください。
+- 例：
+```
+cd dcpu16/Release
+dcpu-16-Win32.exe ../../minesweeper/minesweeper.dcpu
+```
 - 大きなフィールドだとデフォルトの100KHzじゃ遅いので、F3で周波数ロックを解除するとかなり早くなります。
 
 ### 今回のソースファイル
